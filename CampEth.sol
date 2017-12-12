@@ -47,16 +47,27 @@ contract UseCampaign {
 		require(msg.sender == owner);
 		require(!started);
 		require(!ended);
+		require(_campaignDetail.quantityLevel > 0 && _campaignDetail.price > 0);
+		
+		if(campaignDetails.length != 0)
+		{
+		    uint lastIndex = campaignDetails.length - 1;
+		    require(campaignDetails[lastIndex].quantityLevel < _campaignDetail.quantityLevel && campaignDetails[lastIndex].price > _campaignDetail.price);
+		}
+		
         campaignDetails.push(CampaignDetail ({
              quantityLevel: _campaignDetail.quantityLevel,
              price: _campaignDetail.price
         }));
     }
     
+    //TODO Remove Campaign Detail function must be added (before Start Campaign)
+    
     function StartCampaign() public {
 		require(msg.sender == owner);
 		require(!started);
 		require(!ended);
+		require(campaignDetails.length >= 2);
 		
         started = true;
         //TODO validation must be added : limit must be bigger or equal to the biggest value at the list
@@ -69,7 +80,7 @@ contract UseCampaign {
         require(started);
         require(getTotalQuantity() + quantity <= campaign.limit); 
         
-		//According to bought quantity, new price is calculated and validate required amount for new price.
+		//According to bought quantity, new price is calculated and validate required amount for this new price.
         uint newQuantity = getTotalQuantity() + quantity;
         
         uint newPrice = getPriceForQuantity(newQuantity);
@@ -92,7 +103,7 @@ contract UseCampaign {
     
 	
 	//TODO : Scheduling may be implemented for automatic end.
-    function endBuying() public
+    function EndBuying() public
     {
         require(owner == msg.sender);
         require(!ended);
@@ -122,7 +133,7 @@ contract UseCampaign {
             uint rowTotal = 0;
             for(uint j = 0; j < buyers.length; j ++)
             {
-                //return amounts that is more than decreased price
+            currentPrice = getCurrentPrice();
                 rowTotal = buyers[j].quantity * currentPrice;
                 buyers[j].buyeraddress.transfer(buyers[j].value - rowTotal);
                 totalPrice += rowTotal;
@@ -169,11 +180,5 @@ contract UseCampaign {
         
         _price = campaignDetails[maxValidIndex].price;
 
-    }
-    
-    function sortCampaignDetails(CampaignDetail[] details) private constant returns (CampaignDetail[] resultDetails)
-    {
-        //TODO
-        resultDetails = details;
     }
 }
