@@ -128,12 +128,13 @@ contract UseCampaign {
         if(getTotalQuantity() >= campaign.limit || ended)
         {
             ended = true;
+            currentPrice = getCurrentPrice();
             
             uint totalPrice = 0;
             uint rowTotal = 0;
             for(uint j = 0; j < buyers.length; j ++)
             {
-            currentPrice = getCurrentPrice();
+                //return difference amounts according to decreased price
                 rowTotal = buyers[j].quantity * currentPrice;
                 buyers[j].buyeraddress.transfer(buyers[j].value - rowTotal);
                 totalPrice += rowTotal;
