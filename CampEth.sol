@@ -1,10 +1,14 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.14;
+//import "github.com/Arachnid/solidity-stringutils/strings.sol";
+
+import "github.com/Arachnid/solidity-stringutils/strings.sol";
 contract UseCampaign {
+    using strings for *;
 
     struct Campaign {
         string name;
         string description;
-        uint priceAddEnd;
+        uint endTime;
         uint limit;
     }
 
@@ -26,20 +30,29 @@ contract UseCampaign {
     bool ended;
     bool started;
     uint currentPrice = 0;
+    bytes32[] private coupons;
+    
+    mapping(address => string) private soldcoupons;
     
     event PriceDecreased(uint price);
     event CampaignEnded(uint price);
     
-    function UseCampaign(string _name, string _description, uint _limit, uint _addPriceTime) public {
+    function UseCampaign(string _name, string _description, uint _limit, uint _addPriceTime, bytes32[] _coupons) public { 
+        require(_coupons.length == _limit);
+        
         started = false;
 		ended = false;
         campaign = Campaign({
             name: _name,
             description: _description,
-            priceAddEnd: now + _addPriceTime,
+            endTime: now + _addPriceTime,
             limit: _limit
         });
-
+        
+        //TODO coupons must be distinct
+        
+        coupons = _coupons;
+        
         owner = msg.sender;
     }
     
@@ -78,7 +91,7 @@ contract UseCampaign {
         require(msg.sender != owner);
         require(!ended);
         require(started);
-        require(getTotalQuantity() + quantity <= campaign.limit); 
+        require(getTotalQuantity() + quantity <= campaign.limit);
         
 		//According to bought quantity, new price is calculated and validate required amount for this new price.
         uint newQuantity = getTotalQuantity() + quantity;
@@ -103,14 +116,14 @@ contract UseCampaign {
     
 	
 	//TODO : Scheduling may be implemented for automatic end.
-    function EndBuying() public
+    function EndCampaign() public
     {
         require(owner == msg.sender);
         require(!ended);
         require(started);
 		
         //If minimum quantitylevel not reached, then return all the money to the buyers 
-        if(now >= campaign.priceAddEnd)
+        if(now >= campaign.endTime)
         {
             ended = true;
             if(getTotalQuantity() < campaignDetails[0].quantityLevel)
@@ -126,10 +139,10 @@ contract UseCampaign {
         }
         
         if(getTotalQuantity() >= campaign.limit || ended)
-        {
-            ended = true;
+        { 
             currentPrice = getCurrentPrice();
             
+            uint usedCouponIndex = 0;
             uint totalPrice = 0;
             uint rowTotal = 0;
             for(uint j = 0; j < buyers.length; j ++)
@@ -138,6 +151,13 @@ contract UseCampaign {
                 rowTotal = buyers[j].quantity * currentPrice;
                 buyers[j].buyeraddress.transfer(buyers[j].value - rowTotal);
                 totalPrice += rowTotal;
+                
+                for(uint k = 0; k < buyers[j].quantity; k ++)
+                {
+                    soldcoupons[buyers[j].buyeraddress] = soldcoupons[buyers[j].buyeraddress].toSlice().concat(bytes32ToString(coupons[usedCouponIndex]).toSlice());
+
+                    usedCouponIndex ++;
+                }
             }
 
             owner.transfer(totalPrice);
@@ -145,6 +165,22 @@ contract UseCampaign {
             CampaignEnded(currentPrice);
         }
     }
+    
+    
+    function GetCoupon() public constant returns (string)
+    {
+        require(started && ended);
+        return soldcoupons[msg.sender];
+    }
+    
+    /*
+    function GetUsedCoupons() public constant returns (string[])
+    {
+        require(owner == msg.sender);
+        require(started && ended);
+        return soldcoupons[msg.sender];
+    }
+    */
     
     function getTotalQuantity() private constant returns (uint totalQuantity)
     {
@@ -181,5 +217,22 @@ contract UseCampaign {
         
         _price = campaignDetails[maxValidIndex].price;
 
+    }
+    
+    function bytes32ToString(bytes32 x) constant returns (string) {
+        bytes memory bytesString = new bytes(32);
+        uint charCount = 0;
+        for (uint j = 0; j < 32; j++) {
+            byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
+            if (char != 0) {
+                bytesString[charCount] = char;
+                charCount++;
+            }
+        }
+        bytes memory bytesStringTrimmed = new bytes(charCount);
+        for (j = 0; j < charCount; j++) {
+            bytesStringTrimmed[j] = bytesString[j];
+        }
+        return string(bytesStringTrimmed);
     }
 }
