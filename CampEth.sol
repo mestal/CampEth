@@ -1,16 +1,16 @@
 pragma solidity ^0.4.0;
 contract UseCampaign {
 
-    struct CampaignDetail {
-        uint quantityLevel;
-        uint price;
-    }
-    
     struct Campaign {
         string name;
         string description;
         uint priceAddEnd;
         uint limit;
+    }
+
+    struct CampaignDetail {
+        uint quantityLevel;
+        uint price;
     }
     
     struct Buyer {
@@ -31,8 +31,8 @@ contract UseCampaign {
     event CampaignEnded(uint price);
     
     function UseCampaign(string _name, string _description, uint _limit, uint _addPriceTime) public {
-        
-        //CampaignDetail[] _campaignDetails, 
+        started = false;
+		ended = false;
         campaign = Campaign({
             name: _name,
             description: _description,
@@ -41,19 +41,25 @@ contract UseCampaign {
         });
 
         owner = msg.sender;
-        
     }
     
     function AddCampaignDetail(CampaignDetail _campaignDetail) public {
+		require(msg.sender == owner);
+		require(!started);
+		require(!ended);
         campaignDetails.push(CampaignDetail ({
              quantityLevel: _campaignDetail.quantityLevel,
              price: _campaignDetail.price
         }));
     }
     
-    function SubmitCampaign() public {
+    function StartCampaign() public {
+		require(msg.sender == owner);
+		require(!started);
+		require(!ended);
+		
         started = true;
-        //TODO limit en büyük deðere büyük eþit olmalý
+        //TODO limit, listedeki en büyük deðerden büyük ya da eþit olmalý
         //TODO quantityLevel distinct olmalý
     }
 
@@ -63,6 +69,7 @@ contract UseCampaign {
         require(started);
         require(getTotalQuantity() + quantity <= campaign.limit); 
         
+		//Eklenen quantity e göre yeni fiyat hesaplanarak minimum bu paranýn gönderilmesi kontrolü yapýlýyor.
         uint newQuantity = getTotalQuantity() + quantity;
         
         uint newPrice = getPriceForQuantity(newQuantity);
@@ -75,7 +82,7 @@ contract UseCampaign {
             PriceDecreased(newPrice);
         }
         
-        //TODO adrese göre distinct olabilir.
+        //TODO adrese göre distinct yapýlarak push ya da update yapýlabilir.
         buyers.push(Buyer({
                 quantity: quantity,
                 value: msg.value,
@@ -88,6 +95,7 @@ contract UseCampaign {
         require(owner == msg.sender);
         require(!ended);
         require(started);
+		
         //TODO minimum kiþi sayýsý oluþmamýþ ise tüm para iade edilir.
         
         if(now >= campaign.priceAddEnd)
