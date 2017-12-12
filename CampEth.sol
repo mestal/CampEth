@@ -59,17 +59,17 @@ contract UseCampaign {
 		require(!ended);
 		
         started = true;
-        //TODO limit, listedeki en büyük deðerden büyük ya da eþit olmalý
-        //TODO quantityLevel distinct olmalý
+        //TODO validation must be added : limit must be bigger or equal to the biggest value at the list
+        //TODO quantityLevel must be distinct.
     }
 
-    function addBuyer(uint quantity) payable public {
+    function Buy(uint quantity) payable public {
         require(msg.sender != owner);
         require(!ended);
         require(started);
         require(getTotalQuantity() + quantity <= campaign.limit); 
         
-		//Eklenen quantity e göre yeni fiyat hesaplanarak minimum bu paranýn gönderilmesi kontrolü yapýlýyor.
+		//According to bought quantity, new price is calculated and validate required amount for new price.
         uint newQuantity = getTotalQuantity() + quantity;
         
         uint newPrice = getPriceForQuantity(newQuantity);
@@ -82,7 +82,7 @@ contract UseCampaign {
             PriceDecreased(newPrice);
         }
         
-        //TODO adrese göre distinct yapýlarak push ya da update yapýlabilir.
+		//TODO distint process may be done according to address
         buyers.push(Buyer({
                 quantity: quantity,
                 value: msg.value,
@@ -90,14 +90,15 @@ contract UseCampaign {
             }));
     }
     
-    function endAddBuyer() public
+	
+	//TODO : Scheduling may be implemented for automatic end.
+    function endBuying() public
     {
         require(owner == msg.sender);
         require(!ended);
         require(started);
 		
-        //TODO minimum kiþi sayýsý oluþmamýþ ise tüm para iade edilir.
-        
+        //If minimum quantitylevel not reached, then return all the money to the buyers 
         if(now >= campaign.priceAddEnd)
         {
             ended = true;
@@ -121,7 +122,7 @@ contract UseCampaign {
             uint rowTotal = 0;
             for(uint j = 0; j < buyers.length; j ++)
             {
-                //fazlalýklar iade ediliyor.
+                //return amounts that is more than decreased price
                 rowTotal = buyers[j].quantity * currentPrice;
                 buyers[j].buyeraddress.transfer(buyers[j].value - rowTotal);
                 totalPrice += rowTotal;
