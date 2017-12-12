@@ -43,21 +43,21 @@ contract UseCampaign {
         owner = msg.sender;
     }
     
-    function AddCampaignDetail(CampaignDetail _campaignDetail) public {
+    function AddCampaignDetail(uint _quantityLevel, uint _price) public {
 		require(msg.sender == owner);
 		require(!started);
 		require(!ended);
-		require(_campaignDetail.quantityLevel > 0 && _campaignDetail.price > 0);
+		require(_quantityLevel > 0 && _price > 0);
 		
 		if(campaignDetails.length != 0)
 		{
 		    uint lastIndex = campaignDetails.length - 1;
-		    require(campaignDetails[lastIndex].quantityLevel < _campaignDetail.quantityLevel && campaignDetails[lastIndex].price > _campaignDetail.price);
+		    require(campaignDetails[lastIndex].quantityLevel < _quantityLevel && campaignDetails[lastIndex].price > _price);
 		}
 		
         campaignDetails.push(CampaignDetail ({
-             quantityLevel: _campaignDetail.quantityLevel,
-             price: _campaignDetail.price
+             quantityLevel: _quantityLevel,
+             price: _price
         }));
     }
     
