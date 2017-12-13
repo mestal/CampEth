@@ -1,8 +1,9 @@
 pragma solidity ^0.4.14;
-//import "github.com/Arachnid/solidity-stringutils/strings.sol";
-
 import "github.com/Arachnid/solidity-stringutils/strings.sol";
-contract UseCampaign {
+
+contract CampEth {
+    //TODO use modifier
+    
     using strings for *;
 
     struct Campaign {
@@ -37,7 +38,7 @@ contract UseCampaign {
     event PriceDecreased(uint price);
     event CampaignEnded(uint price);
     
-    function UseCampaign(string _name, string _description, uint _limit, uint _addPriceTime, bytes32[] _coupons) public { 
+    function CampEth(string _name, string _description, uint _limit, uint _addPriceTime, bytes32[] _coupons) public { 
         require(_coupons.length == _limit);
         
         started = false;
@@ -55,6 +56,7 @@ contract UseCampaign {
         
         owner = msg.sender;
     }
+
     
     function AddCampaignDetail(uint _quantityLevel, uint _price) public {
 		require(msg.sender == owner);
@@ -91,10 +93,11 @@ contract UseCampaign {
         require(msg.sender != owner);
         require(!ended);
         require(started);
-        require(getTotalQuantity() + quantity <= campaign.limit);
+        uint totalQuantity = getTotalQuantity();
+        require(totalQuantity + quantity <= campaign.limit);
         
 		//According to bought quantity, new price is calculated and validate required amount for this new price.
-        uint newQuantity = getTotalQuantity() + quantity;
+        uint newQuantity = totalQuantity + quantity;
         
         uint newPrice = getPriceForQuantity(newQuantity);
 
@@ -114,6 +117,11 @@ contract UseCampaign {
             }));
     }
     
+    function checkBalance() returns(uint)
+    {
+        return this.balance;
+    }
+    
 	
 	//TODO : Scheduling may be implemented for automatic end.
     function EndCampaign() public
@@ -122,6 +130,7 @@ contract UseCampaign {
         require(!ended);
         require(started);
 		
+		/*
         //If minimum quantitylevel not reached, then return all the money to the buyers 
         if(now >= campaign.endTime)
         {
@@ -137,9 +146,11 @@ contract UseCampaign {
                 return;
             }
         }
+        */
         
         if(getTotalQuantity() >= campaign.limit || ended)
         { 
+            ended = true;
             currentPrice = getCurrentPrice();
             
             uint usedCouponIndex = 0;
@@ -165,7 +176,7 @@ contract UseCampaign {
             CampaignEnded(currentPrice);
         }
     }
-    
+
     
     function GetCoupon() public constant returns (string)
     {
@@ -182,7 +193,7 @@ contract UseCampaign {
     }
     */
     
-    function getTotalQuantity() private constant returns (uint totalQuantity)
+    function getTotalQuantity() public constant returns (uint totalQuantity)
     {
         totalQuantity = 0;
         for(uint i = 0; i < buyers.length;i ++)
@@ -191,14 +202,14 @@ contract UseCampaign {
         }
     }
     
-    function getCurrentPrice() private constant returns (uint _currentPrice)
+    function getCurrentPrice() public constant returns (uint _currentPrice)
     {
         uint totalQuantity = getTotalQuantity();
 
         _currentPrice = getPriceForQuantity(totalQuantity);
     }
     
-    function getPriceForQuantity(uint quantity) private constant returns (uint _price)
+    function getPriceForQuantity(uint quantity) public constant returns (uint _price)
     {
         if(campaignDetails[0].quantityLevel > quantity)
         {
@@ -234,5 +245,35 @@ contract UseCampaign {
             bytesStringTrimmed[j] = bytesString[j];
         }
         return string(bytesStringTrimmed);
+    }
+    
+    
+    //Test Debug
+    function TestCreateDetail() public
+    {
+        AddCampaignDetail(1,100000000);
+        AddCampaignDetail(2,75000000);
+        StartCampaign();
+    }
+    
+    function GetStarted() public constant returns (bool)
+    {
+        return started;
+    }
+    
+    function GetEnded() public constant returns (bool)
+    {
+        return ended;
+    }
+    
+    
+    function GetCampaignInfo() constant public returns(string)
+    {
+        return campaign.name;
+    }
+    
+    function GetCoupon1() constant public returns(string)
+    {
+        return bytes32ToString(coupons[0]);
     }
 }
