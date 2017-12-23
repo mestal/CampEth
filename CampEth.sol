@@ -1,4 +1,4 @@
-pragma solidity ^0.4.14;
+pragma solidity ^0.4.17;
 import "github.com/Arachnid/solidity-stringutils/strings.sol";
 
 contract CampEth {
@@ -74,6 +74,20 @@ contract CampEth {
              quantityLevel: _quantityLevel,
              price: _price
         }));
+    }
+    
+    function GetCampaignInfo() public constant returns(string,string,uint,uint[],uint[])
+    {
+        uint[] memory quantityLevels = new uint[](campaignDetails.length);
+        uint[] memory prices = new uint[](campaignDetails.length);
+        
+        for (uint i = 0; i < campaignDetails.length; i++) {
+            quantityLevels[i] = campaignDetails[i].quantityLevel;
+            prices[i] = campaignDetails[i].price;
+        }
+        
+        
+        return (campaign.name, campaign.description, campaign.limit, quantityLevels, prices);
     }
     
     //TODO Remove Campaign Detail function must be added (before Start Campaign)
@@ -264,12 +278,6 @@ contract CampEth {
     function GetEnded() public constant returns (bool)
     {
         return ended;
-    }
-    
-    
-    function GetCampaignInfo() constant public returns(string)
-    {
-        return campaign.name;
     }
     
     function GetCoupon1() constant public returns(string)
