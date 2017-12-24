@@ -1,6 +1,34 @@
 pragma solidity ^0.4.17;
 import "github.com/Arachnid/solidity-stringutils/strings.sol";
 
+contract MainContract {
+    
+    address addressList;
+    
+    uint deneme;
+    function AddNewCampaign(address add1) public
+    {
+        addressList = add1;
+        //addressList.push(add1);
+    }
+    
+    function GetCampaignList() constant public returns (address)
+    {
+        return addressList;
+    }
+    
+    function setdeneme(uint a) public
+    {
+        deneme = a;
+    }
+    
+    function getdeneme() public constant returns (uint)
+    {
+        return deneme;
+    }
+    
+}
+
 contract CampEth {
     //TODO use modifier
     
@@ -32,13 +60,15 @@ contract CampEth {
     bool started;
     uint currentPrice = 0;
     bytes32[] private coupons;
+    address mainContractAddress;
+    MainContract mainContract;
     
     mapping(address => string) private soldcoupons;
     
     event PriceDecreased(uint price);
     event CampaignEnded(uint price);
     
-    function CampEth(string _name, string _description, uint _limit, uint _addPriceTime, bytes32[] _coupons) public { 
+    function CampEth(address _mainContract, string _name, string _description, uint _limit, uint _addPriceTime, bytes32[] _coupons) public { 
         require(_coupons.length == _limit);
         
         started = false;
@@ -49,6 +79,7 @@ contract CampEth {
             endTime: now + _addPriceTime,
             limit: _limit
         });
+        mainContractAddress = _mainContract;
         
         //TODO coupons must be distinct
         
@@ -62,7 +93,7 @@ contract CampEth {
 		require(msg.sender == owner);
 		require(!started);
 		require(!ended);
-		require(_quantityLevel > 0 && _price > 0);
+		require(_quantityLevel >= 0 && _price > 0);
 		
 		if(campaignDetails.length != 0)
 		{
@@ -92,13 +123,26 @@ contract CampEth {
     
     //TODO Remove Campaign Detail function must be added (before Start Campaign)
     
-    function StartCampaign() public {
+    function StartCampaign() public returns(bool) {
 		require(msg.sender == owner);
 		require(!started);
 		require(!ended);
 		require(campaignDetails.length >= 2);
 		
         started = true;
+        
+        //Can no change other contract property
+        //mainContract = MainContract(mainContractAddress);
+        //mainContract.AddNewCampaign.gas(800)(address(this));
+        
+        //mainContract.setdeneme(5);
+        
+        //return mainContractAddress.call(bytes4(keccak256("AddNewCampaign(address)")), address(this));
+        
+        //require(mainContractAddress.call(bytes4(keccak256("setdeneme(uint)")), 3) == true);
+        //mainContract = MainContract(mainContractAddress);
+        //mainContract.setdeneme.gas(800)(4);
+        
         //TODO validation must be added : limit must be bigger or equal to the biggest value at the list
         //TODO quantityLevel must be distinct.
     }
@@ -265,9 +309,10 @@ contract CampEth {
     //Test Debug
     function TestCreateDetail() public
     {
+        AddCampaignDetail(0,125000000);
         AddCampaignDetail(1,100000000);
         AddCampaignDetail(2,75000000);
-        StartCampaign();
+        //StartCampaign();
     }
     
     function GetStarted() public constant returns (bool)
