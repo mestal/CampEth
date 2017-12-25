@@ -1,277 +1,34 @@
 <html>
 <head>
-	<script src="web3.min.js"></script>
+	<script src="scripts\web3.min.js"></script>
+	<!--script src="scripts\angular.min.js"></script-->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="mainController.js"></script>
 </head>
 <body>
-
-	<script>
-		var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-	
-		var cc = web3.eth.contract([
-			{
-				"constant": true,
-				"inputs": [],
-				"name": "getTotalQuantity",
-				"outputs": [
-					{
-						"name": "totalQuantity",
-						"type": "uint256"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [],
-				"name": "getCurrentPrice",
-				"outputs": [
-					{
-						"name": "_currentPrice",
-						"type": "uint256"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [],
-				"name": "GetCampaignInfo",
-				"outputs": [
-					{
-						"name": "",
-						"type": "string"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [
-					{
-						"name": "x",
-						"type": "bytes32"
-					}
-				],
-				"name": "bytes32ToString",
-				"outputs": [
-					{
-						"name": "",
-						"type": "string"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [],
-				"name": "GetCoupon",
-				"outputs": [
-					{
-						"name": "",
-						"type": "string"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [],
-				"name": "GetCoupon1",
-				"outputs": [
-					{
-						"name": "",
-						"type": "string"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [
-					{
-						"name": "quantity",
-						"type": "uint256"
-					}
-				],
-				"name": "getPriceForQuantity",
-				"outputs": [
-					{
-						"name": "_price",
-						"type": "uint256"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [],
-				"name": "GetStarted",
-				"outputs": [
-					{
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [],
-				"name": "GetEnded",
-				"outputs": [
-					{
-						"name": "",
-						"type": "bool"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"constant": false,
-				"inputs": [
-					{
-						"name": "_quantityLevel",
-						"type": "uint256"
-					},
-					{
-						"name": "_price",
-						"type": "uint256"
-					}
-				],
-				"name": "AddCampaignDetail",
-				"outputs": [],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"constant": false,
-				"inputs": [
-					{
-						"name": "quantity",
-						"type": "uint256"
-					}
-				],
-				"name": "Buy",
-				"outputs": [],
-				"payable": true,
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"name": "price",
-						"type": "uint256"
-					}
-				],
-				"name": "CampaignEnded",
-				"type": "event"
-			},
-			{
-				"constant": false,
-				"inputs": [],
-				"name": "EndCampaign",
-				"outputs": [],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"constant": false,
-				"inputs": [],
-				"name": "checkBalance",
-				"outputs": [
-					{
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"constant": false,
-				"inputs": [],
-				"name": "TestCreateDetail",
-				"outputs": [],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"name": "_name",
-						"type": "string"
-					},
-					{
-						"name": "_description",
-						"type": "string"
-					},
-					{
-						"name": "_limit",
-						"type": "uint256"
-					},
-					{
-						"name": "_addPriceTime",
-						"type": "uint256"
-					},
-					{
-						"name": "_coupons",
-						"type": "bytes32[]"
-					}
-				],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "constructor"
-			},
-			{
-				"constant": false,
-				"inputs": [],
-				"name": "StartCampaign",
-				"outputs": [],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"anonymous": false,
-				"inputs": [
-					{
-						"indexed": false,
-						"name": "price",
-						"type": "uint256"
-					}
-				],
-				"name": "PriceDecreased",
-				"type": "event"
-			}
-		]);
-
-		var c = cc.at('0xf74831b9ffdf8832b00c67ae4a0678f9e429615f');
-		c.Buy(1, {from: web3.eth.accounts[2], gas: 3000000, value: 100000000 });
-	</script>
+	<div ng-app="myApp" ng-controller="mainController">
+		<ul>
+			<li ng-repeat="c in campaigns">
+				<div><b>Code: </b><span ng-bind="c.code"></span></div>
+				<div><b>Name: </b><span ng-bind="c.name"></span></div>
+				<div><b>Limit: </b><span ng-bind="c.limit"></span></div>
+				<div><b>Current Bought Quantity: </b><span ng-bind="c.totalQuantity"></span></div>
+				<div><b>Current Price: </b>
+					<span ng-bind="c.currentPrice"></span> 
+					<input type="text" placeholder="Quantity" ng-model="c.quantity" ></input> 
+					<input type="button" value="Buy" ng-click="Buy(c)"></input> 
+				</div>
+				<b>Price Definitions: </b>
+				<ul>
+						<li ng-repeat="pd in c.priceDefs">
+								<div><b>Quantity Level: </b><span ng-bind="pd.quantityLevel"></span><b> - Price: </b><span ng-bind="pd.price"></span></div>
+						</li>
+				</ul>
+				<br>
+				<!--div ng-bind="x.genericInfo[3]"></div>
+				<div ng-bind="x.genericInfo[4]"></div-->
+			</li>
+		</ul>
+	</div>
 </body>
 </html>

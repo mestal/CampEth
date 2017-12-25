@@ -3,30 +3,18 @@ import "github.com/Arachnid/solidity-stringutils/strings.sol";
 
 contract MainContract {
     
-    address addressList;
+    address[] _addressList;
     
     uint deneme;
     function AddNewCampaign(address add1) public
     {
-        addressList = add1;
-        //addressList.push(add1);
+        _addressList.push(add1);
     }
     
-    function GetCampaignList() constant public returns (address)
+    function GetCampaignList() constant public returns (address[])
     {
-        return addressList;
+        return _addressList;
     }
-    
-    function setdeneme(uint a) public
-    {
-        deneme = a;
-    }
-    
-    function getdeneme() public constant returns (uint)
-    {
-        return deneme;
-    }
-    
 }
 
 contract CampEth {
@@ -35,8 +23,8 @@ contract CampEth {
     using strings for *;
 
     struct Campaign {
+        string code;
         string name;
-        string description;
         uint endTime;
         uint limit;
     }
@@ -52,84 +40,84 @@ contract CampEth {
         address buyeraddress;
     }
     
-    Campaign campaign;
-    CampaignDetail[] campaignDetails;
-    Buyer[] buyers;
-    address owner;
-    bool ended;
-    bool started;
-    uint currentPrice = 0;
-    bytes32[] private coupons;
-    address mainContractAddress;
-    MainContract mainContract;
+    Campaign _campaign;
+    CampaignDetail[] _campaignDetails;
+    Buyer[] _buyers;
+    address _owner;
+    bool _ended;
+    bool _started;
+    uint _currentPrice = 0;
+    bytes32[] private _coupons;
+    address _mainContractAddress;
+    MainContract _mainContract;
     
-    mapping(address => string) private soldcoupons;
+    mapping(address => string) private _soldcoupons;
     
     event PriceDecreased(uint price);
     event CampaignEnded(uint price);
     
-    function CampEth(address _mainContract, string _name, string _description, uint _limit, uint _addPriceTime, bytes32[] _coupons) public { 
-        require(_coupons.length == _limit);
+    function CampEth(string code, string name, uint limit, uint addPriceTime, bytes32[] coupons) public { 
+        require(coupons.length == limit);
         
-        started = false;
-		ended = false;
-        campaign = Campaign({
-            name: _name,
-            description: _description,
-            endTime: now + _addPriceTime,
-            limit: _limit
+        _started = false;
+		_ended = false;
+        _campaign = Campaign({
+            code: code,
+            name: name,
+            endTime: now + addPriceTime,
+            limit: limit
         });
-        mainContractAddress = _mainContract;
+        //mainContractAddress = _mainContract;
         
         //TODO coupons must be distinct
         
         coupons = _coupons;
         
-        owner = msg.sender;
+        _owner = msg.sender;
     }
 
     
-    function AddCampaignDetail(uint _quantityLevel, uint _price) public {
-		require(msg.sender == owner);
-		require(!started);
-		require(!ended);
-		require(_quantityLevel >= 0 && _price > 0);
+    function AddCampaignDetail(uint quantityLevel, uint price) public {
+		require(msg.sender == _owner);
+		require(!_started);
+		require(!_ended);
+		require(quantityLevel >= 0 && price > 0);
 		
-		if(campaignDetails.length != 0)
+		if(_campaignDetails.length != 0)
 		{
-		    uint lastIndex = campaignDetails.length - 1;
-		    require(campaignDetails[lastIndex].quantityLevel < _quantityLevel && campaignDetails[lastIndex].price > _price);
+		    uint lastIndex = _campaignDetails.length - 1;
+		    require(_campaignDetails[lastIndex].quantityLevel < quantityLevel && _campaignDetails[lastIndex].price > price);
 		}
 		
-        campaignDetails.push(CampaignDetail ({
-             quantityLevel: _quantityLevel,
-             price: _price
+        _campaignDetails.push(CampaignDetail ({
+             quantityLevel: quantityLevel,
+             price: price
         }));
     }
     
     function GetCampaignInfo() public constant returns(string,string,uint,uint[],uint[])
     {
-        uint[] memory quantityLevels = new uint[](campaignDetails.length);
-        uint[] memory prices = new uint[](campaignDetails.length);
+        uint[] memory quantityLevels = new uint[](_campaignDetails.length);
+        uint[] memory prices = new uint[](_campaignDetails.length);
         
-        for (uint i = 0; i < campaignDetails.length; i++) {
-            quantityLevels[i] = campaignDetails[i].quantityLevel;
-            prices[i] = campaignDetails[i].price;
+        for (uint i = 0; i < _campaignDetails.length; i++) {
+            quantityLevels[i] = _campaignDetails[i].quantityLevel;
+            prices[i] = _campaignDetails[i].price;
         }
         
         
-        return (campaign.name, campaign.description, campaign.limit, quantityLevels, prices);
+        return (_campaign.code, _campaign.name, _campaign.limit, quantityLevels, prices);
     }
     
     //TODO Remove Campaign Detail function must be added (before Start Campaign)
     
     function StartCampaign() public returns(bool) {
-		require(msg.sender == owner);
-		require(!started);
-		require(!ended);
-		require(campaignDetails.length >= 2);
+		require(msg.sender == _owner);
+		require(!_started);
+		require(!_ended);
+		require(_campaignDetails.length >= 2);
 		
-        started = true;
+        _started = true;
         
         //Can no change other contract property
         //mainContract = MainContract(mainContractAddress);
@@ -148,11 +136,11 @@ contract CampEth {
     }
 
     function Buy(uint quantity) payable public {
-        require(msg.sender != owner);
-        require(!ended);
-        require(started);
+        require(msg.sender != _owner);
+        require(!_ended);
+        require(_started);
         uint totalQuantity = getTotalQuantity();
-        require(totalQuantity + quantity <= campaign.limit);
+        require(totalQuantity + quantity <= _campaign.limit);
         
 		//According to bought quantity, new price is calculated and validate required amount for this new price.
         uint newQuantity = totalQuantity + quantity;
@@ -161,14 +149,14 @@ contract CampEth {
 
         require(newPrice <= msg.value / quantity);
         
-        if(newPrice != currentPrice)
+        if(newPrice != _currentPrice)
         {
-            currentPrice = newPrice;
+            _currentPrice = newPrice;
             PriceDecreased(newPrice);
         }
         
 		//TODO distint process may be done according to address
-        buyers.push(Buyer({
+        _buyers.push(Buyer({
                 quantity: quantity,
                 value: msg.value,
                 buyeraddress: msg.sender
@@ -184,9 +172,9 @@ contract CampEth {
 	//TODO : Scheduling may be implemented for automatic end.
     function EndCampaign() public
     {
-        require(owner == msg.sender);
-        require(!ended);
-        require(started);
+        require(_owner == msg.sender);
+        require(!_ended);
+        require(_started);
 		
 		/*
         //If minimum quantitylevel not reached, then return all the money to the buyers 
@@ -206,40 +194,40 @@ contract CampEth {
         }
         */
         
-        if(getTotalQuantity() >= campaign.limit || ended)
+        if(getTotalQuantity() >= _campaign.limit || _ended)
         { 
-            ended = true;
-            currentPrice = getCurrentPrice();
+            _ended = true;
+            _currentPrice = getCurrentPrice();
             
             uint usedCouponIndex = 0;
             uint totalPrice = 0;
             uint rowTotal = 0;
-            for(uint j = 0; j < buyers.length; j ++)
+            for(uint j = 0; j < _buyers.length; j ++)
             {
                 //return difference amounts according to decreased price
-                rowTotal = buyers[j].quantity * currentPrice;
-                buyers[j].buyeraddress.transfer(buyers[j].value - rowTotal);
+                rowTotal = _buyers[j].quantity * _currentPrice;
+                _buyers[j].buyeraddress.transfer(_buyers[j].value - rowTotal);
                 totalPrice += rowTotal;
                 
-                for(uint k = 0; k < buyers[j].quantity; k ++)
+                for(uint k = 0; k < _buyers[j].quantity; k ++)
                 {
-                    soldcoupons[buyers[j].buyeraddress] = soldcoupons[buyers[j].buyeraddress].toSlice().concat(bytes32ToString(coupons[usedCouponIndex]).toSlice());
+                    _soldcoupons[_buyers[j].buyeraddress] = _soldcoupons[_buyers[j].buyeraddress].toSlice().concat(bytes32ToString(_coupons[usedCouponIndex]).toSlice());
 
                     usedCouponIndex ++;
                 }
             }
 
-            owner.transfer(totalPrice);
+            _owner.transfer(totalPrice);
             
-            CampaignEnded(currentPrice);
+            CampaignEnded(_currentPrice);
         }
     }
 
     
     function GetCoupon() public constant returns (string)
     {
-        require(started && ended);
-        return soldcoupons[msg.sender];
+        require(_started && _ended);
+        return _soldcoupons[msg.sender];
     }
     
     /*
@@ -254,9 +242,9 @@ contract CampEth {
     function getTotalQuantity() public constant returns (uint totalQuantity)
     {
         totalQuantity = 0;
-        for(uint i = 0; i < buyers.length;i ++)
+        for(uint i = 0; i < _buyers.length;i ++)
         {
-            totalQuantity += buyers[i].quantity;
+            totalQuantity += _buyers[i].quantity;
         }
     }
     
@@ -269,22 +257,22 @@ contract CampEth {
     
     function getPriceForQuantity(uint quantity) public constant returns (uint _price)
     {
-        if(campaignDetails[0].quantityLevel > quantity)
+        if(_campaignDetails[0].quantityLevel > quantity)
         {
             _price = 0;
             return;
         }
         
         uint maxValidIndex = 0;
-        for(uint i = 1; i < campaignDetails.length; i ++)
+        for(uint i = 1; i < _campaignDetails.length; i ++)
         {
-            if(campaignDetails[i].quantityLevel <= quantity)
+            if(_campaignDetails[i].quantityLevel <= quantity)
                 maxValidIndex = i;
             else
                 break;
         }
         
-        _price = campaignDetails[maxValidIndex].price;
+        _price = _campaignDetails[maxValidIndex].price;
 
     }
     
@@ -317,16 +305,16 @@ contract CampEth {
     
     function GetStarted() public constant returns (bool)
     {
-        return started;
+        return _started;
     }
     
     function GetEnded() public constant returns (bool)
     {
-        return ended;
+        return _ended;
     }
     
     function GetCoupon1() constant public returns(string)
     {
-        return bytes32ToString(coupons[0]);
+        return bytes32ToString(_coupons[0]);
     }
 }
