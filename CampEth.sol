@@ -5,7 +5,6 @@ contract MainContract {
     
     address[] _addressList;
     
-    uint deneme;
     function AddNewCampaign(address add1) public
     {
         _addressList.push(add1);
@@ -18,7 +17,6 @@ contract MainContract {
 }
 
 contract CampEth {
-    //TODO use modifier
     
     using strings for *;
 
@@ -48,8 +46,6 @@ contract CampEth {
     bool _started;
     uint _currentPrice = 0;
     bytes32[] private _coupons;
-    address _mainContractAddress;
-    MainContract _mainContract;
     
     mapping(address => string) private _soldcoupons;
     
@@ -67,7 +63,6 @@ contract CampEth {
             endTime: now + addPriceTime,
             limit: limit
         });
-        //mainContractAddress = _mainContract;
         
         //TODO coupons must be distinct
         
@@ -95,7 +90,7 @@ contract CampEth {
         }));
     }
     
-    function GetCampaignInfo() public constant returns(string,string,uint,uint[],uint[])
+    function GetCampaignInfo() public constant returns(string,string,uint,bool,bool,uint[],uint[],address)
     {
         uint[] memory quantityLevels = new uint[](_campaignDetails.length);
         uint[] memory prices = new uint[](_campaignDetails.length);
@@ -106,7 +101,7 @@ contract CampEth {
         }
         
         
-        return (_campaign.code, _campaign.name, _campaign.limit, quantityLevels, prices);
+        return (_campaign.code, _campaign.name, _campaign.limit, _started, _ended, quantityLevels, prices, _owner);
     }
     
     //TODO Remove Campaign Detail function must be added (before Start Campaign)
@@ -298,9 +293,11 @@ contract CampEth {
     function TestCreateDetail() public
     {
         AddCampaignDetail(0,125000000);
-        AddCampaignDetail(1,100000000);
-        AddCampaignDetail(2,75000000);
-        //StartCampaign();
+        AddCampaignDetail(3,100000000);
+        AddCampaignDetail(7,75000000);
+        AddCampaignDetail(9,60000000);
+        AddCampaignDetail(11,50000000);
+        StartCampaign();
     }
     
     function GetStarted() public constant returns (bool)

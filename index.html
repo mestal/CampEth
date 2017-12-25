@@ -1,32 +1,40 @@
 <html>
 <head>
 	<script src="scripts\web3.min.js"></script>
-	<!--script src="scripts\angular.min.js"></script-->
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 	<script src="mainController.js"></script>
 </head>
 <body>
 	<div ng-app="myApp" ng-controller="mainController">
+		<span>Select an Account: </span>
+		<select ng-model="selectedAccount" ng-options="a for a in accounts">
+		</select>
+		<div ng-show="selectedAccount != null">
+			<div><b>Code: </b><input type="text" placeholder="Code" ng-model="newCamp.code" ></input> </div>
+			<div><b>Name: </b><input type="text" placeholder="Name" ng-model="newCamp.name" ></input> </div>
+			<div><b>Limit: </b><input type="text" placeholder="Limit" ng-model="newCamp.limit" ></input> </div>
+			<input type="button" value="Create New Campaign" ng-click="CreateNewCampaign(newCamp)"></input> 
+		</div>
 		<ul>
 			<li ng-repeat="c in campaigns">
 				<div><b>Code: </b><span ng-bind="c.code"></span></div>
 				<div><b>Name: </b><span ng-bind="c.name"></span></div>
 				<div><b>Limit: </b><span ng-bind="c.limit"></span></div>
 				<div><b>Current Bought Quantity: </b><span ng-bind="c.totalQuantity"></span></div>
+				<div ng-show="c.ended"><b>Ended</b></div>
 				<div><b>Current Price: </b>
 					<span ng-bind="c.currentPrice"></span> 
-					<input type="text" placeholder="Quantity" ng-model="c.quantity" ></input> 
-					<input type="button" value="Buy" ng-click="Buy(c)"></input> 
+					<input type="text" placeholder="Quantity" ng-model="c.quantity" ng-hide="selectedAccount == c.owner || selectedAccount == null"></input> 
+					<input type="button" value="Buy" ng-click="Buy(c)" ng-hide="selectedAccount == c.owner || selectedAccount == null"></input> 
+					<input type="button" value="End Campaign" ng-click="End(c)" ng-show="selectedAccount == c.owner && c.started && !c.ended"></input> 
 				</div>
 				<b>Price Definitions: </b>
 				<ul>
-						<li ng-repeat="pd in c.priceDefs">
-								<div><b>Quantity Level: </b><span ng-bind="pd.quantityLevel"></span><b> - Price: </b><span ng-bind="pd.price"></span></div>
-						</li>
+					<li ng-repeat="pd in c.priceDefs">
+							<div><b>Quantity Level: </b><span ng-bind="pd.quantityLevel"></span><b> - Price: </b><span ng-bind="pd.price"></span></div>
+					</li>
 				</ul>
 				<br>
-				<!--div ng-bind="x.genericInfo[3]"></div>
-				<div ng-bind="x.genericInfo[4]"></div-->
 			</li>
 		</ul>
 	</div>
