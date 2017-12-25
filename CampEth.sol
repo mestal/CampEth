@@ -45,9 +45,9 @@ contract CampEth {
     bool _ended;
     bool _started;
     uint _currentPrice = 0;
-    bytes32[] private _coupons;
+    bytes32[] public _coupons;
     
-    mapping(address => string) private _soldcoupons;
+    mapping(address => string) public _soldcoupons;
     
     event PriceDecreased(uint price);
     event CampaignEnded(uint price);
@@ -158,7 +158,7 @@ contract CampEth {
             }));
     }
     
-    function checkBalance() returns(uint)
+    function checkBalance() constant public returns(uint)
     {
         return this.balance;
     }
@@ -170,7 +170,7 @@ contract CampEth {
         require(_owner == msg.sender);
         require(!_ended);
         require(_started);
-		
+        
 		/*
         //If minimum quantitylevel not reached, then return all the money to the buyers 
         if(now >= campaign.endTime)
@@ -203,19 +203,21 @@ contract CampEth {
                 rowTotal = _buyers[j].quantity * _currentPrice;
                 _buyers[j].buyeraddress.transfer(_buyers[j].value - rowTotal);
                 totalPrice += rowTotal;
-                
+                /*
                 for(uint k = 0; k < _buyers[j].quantity; k ++)
                 {
                     _soldcoupons[_buyers[j].buyeraddress] = _soldcoupons[_buyers[j].buyeraddress].toSlice().concat(bytes32ToString(_coupons[usedCouponIndex]).toSlice());
 
                     usedCouponIndex ++;
                 }
+                */
             }
 
             _owner.transfer(totalPrice);
             
-            CampaignEnded(_currentPrice);
+            //CampaignEnded(_currentPrice);
         }
+        
     }
 
     
@@ -298,6 +300,28 @@ contract CampEth {
         AddCampaignDetail(9,60000000);
         AddCampaignDetail(11,50000000);
         StartCampaign();
+    }
+    
+    //Test Debug
+    function TestCreateDetail2() public
+    {
+        AddCampaignDetail(0,125000000);
+        AddCampaignDetail(1,100000000);
+        AddCampaignDetail(2,75000000);
+        StartCampaign();
+    }
+    
+    function GetBuyers() public constant returns (address[],uint[])
+    {
+        address[] memory addresses = new address[](_buyers.length);
+        uint[] memory quantities = new uint[](_buyers.length);
+        
+        for (uint i = 0; i < _buyers.length; i++) {
+            addresses[i] = _buyers[i].buyeraddress;
+            quantities[i] = _buyers[i].quantity;
+        }
+        
+        return (addresses, quantities);
     }
     
     function GetStarted() public constant returns (bool)

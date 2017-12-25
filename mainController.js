@@ -9,7 +9,7 @@ app.controller("mainController", function($scope) {
     var mc = getMainContract();
     var cc = getCampaignContract();
 
-    var m = mc.at('0x2e51ca332c928b56d5f89b352ef85418f5b6e2a4');
+    var m = mc.at('0xc2ae67005ea5b9f44f1aef4d4825e442e060a1b9');
     
     var list = m.GetCampaignList();
 
