@@ -1,0 +1,390 @@
+{
+  "contractName": "MainContract",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "GetCampaignList",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "add1",
+          "type": "address"
+        }
+      ],
+      "name": "AddNewCampaign",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6060604052341561000f57600080fd5b61027f8061001e6000396000f30060606040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630dd6d05c146100515780633ef3d0e4146100bb575b600080fd5b341561005c57600080fd5b6100646100f4565b6040518080602001828103825283818151815260200191508051906020019060200280838360005b838110156100a757808201518184015260208101905061008c565b505050509050019250505060405180910390f35b34156100c657600080fd5b6100f2600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610188565b005b6100fc6101ee565b600080548060200260200160405190810160405280929190818152602001828054801561017e57602002820191906000526020600020905b8160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019060010190808311610134575b5050505050905090565b6000805480600101828161019c9190610202565b9160005260206000209001600083909190916101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505050565b602060405190810160405280600081525090565b81548183558181151161022957818360005260206000209182019101610228919061022e565b5b505050565b61025091905b8082111561024c576000816000905550600101610234565b5090565b905600a165627a7a723058204aa44c3576846c7d2dee589bbffa1aefcfa9e80d3ccd6d424b8bab7132449d9f0029",
+  "deployedBytecode": "0x60606040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680630dd6d05c146100515780633ef3d0e4146100bb575b600080fd5b341561005c57600080fd5b6100646100f4565b6040518080602001828103825283818151815260200191508051906020019060200280838360005b838110156100a757808201518184015260208101905061008c565b505050509050019250505060405180910390f35b34156100c657600080fd5b6100f2600480803573ffffffffffffffffffffffffffffffffffffffff16906020019091905050610188565b005b6100fc6101ee565b600080548060200260200160405190810160405280929190818152602001828054801561017e57602002820191906000526020600020905b8160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019060010190808311610134575b5050505050905090565b6000805480600101828161019c9190610202565b9160005260206000209001600083909190916101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505050565b602060405190810160405280600081525090565b81548183558181151161022957818360005260206000209182019101610228919061022e565b5b505050565b61025091905b8082111561024c576000816000905550600101610234565b5090565b905600a165627a7a723058204aa44c3576846c7d2dee589bbffa1aefcfa9e80d3ccd6d424b8bab7132449d9f0029",
+  "sourceMap": "94:283:1:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "94:283:1:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;268:106;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:2;8:100;;;99:1;94:3;90;84:5;80:1;75:3;71;64:6;52:2;49:1;45:3;40:15;;8:100;;;12:14;3:109;;;;;;;;;;;;;;;;;164:92:1;;;;;;;;;;;;;;;;;;;;;;;;;;;;268:106;320:9;;:::i;:::-;354:12;347:19;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;268:106;:::o;164:92::-;225:12;:23;;;;;;;;;;;:::i;:::-;;;;;;;;;;243:4;225:23;;;;;;;;;;;;;;;;;;;;;;;164:92;:::o;94:283::-;;;;;;;;;;;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;:::o;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
+  "source": "pragma solidity ^0.4.17;\r\n//import \"github.com/Arachnid/solidity-stringutils/strings.sol\";\r\n\r\ncontract MainContract {\r\n    \r\n    address[] _addressList;\r\n    \r\n    function AddNewCampaign(address add1) public\r\n    {\r\n        _addressList.push(add1);\r\n    }\r\n    \r\n    function GetCampaignList() constant public returns (address[])\r\n    {\r\n        return _addressList;\r\n    }\r\n}",
+  "sourcePath": "C:\\Users\\emesalp\\Documents\\GitHub\\CamPeth2\\contracts\\MainContract.sol",
+  "ast": {
+    "attributes": {
+      "absolutePath": "/C/Users/emesalp/Documents/GitHub/CamPeth2/contracts/MainContract.sol",
+      "exportedSymbols": {
+        "MainContract": [
+          904
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".17"
+          ]
+        },
+        "id": 879,
+        "name": "PragmaDirective",
+        "src": "0:24:1"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            904
+          ],
+          "name": "MainContract",
+          "scope": 905
+        },
+        "children": [
+          {
+            "attributes": {
+              "constant": false,
+              "name": "_addressList",
+              "scope": 904,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "address[] storage ref",
+              "value": null,
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "length": null,
+                  "type": "address[] storage pointer"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "address",
+                      "type": "address"
+                    },
+                    "id": 880,
+                    "name": "ElementaryTypeName",
+                    "src": "129:7:1"
+                  }
+                ],
+                "id": 881,
+                "name": "ArrayTypeName",
+                "src": "129:9:1"
+              }
+            ],
+            "id": 882,
+            "name": "VariableDeclaration",
+            "src": "129:22:1"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "AddNewCampaign",
+              "payable": false,
+              "scope": 904,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "add1",
+                      "scope": 894,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "type": "address"
+                        },
+                        "id": 883,
+                        "name": "ElementaryTypeName",
+                        "src": "188:7:1"
+                      }
+                    ],
+                    "id": 884,
+                    "name": "VariableDeclaration",
+                    "src": "188:12:1"
+                  }
+                ],
+                "id": 885,
+                "name": "ParameterList",
+                "src": "187:14:1"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 886,
+                "name": "ParameterList",
+                "src": "214:0:1"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "uint256",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_address",
+                                  "typeString": "address"
+                                }
+                              ],
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "push",
+                              "referencedDeclaration": null,
+                              "type": "function (address) returns (uint256)"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 882,
+                                  "type": "address[] storage ref",
+                                  "value": "_addressList"
+                                },
+                                "id": 887,
+                                "name": "Identifier",
+                                "src": "225:12:1"
+                              }
+                            ],
+                            "id": 889,
+                            "name": "MemberAccess",
+                            "src": "225:17:1"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 884,
+                              "type": "address",
+                              "value": "add1"
+                            },
+                            "id": 890,
+                            "name": "Identifier",
+                            "src": "243:4:1"
+                          }
+                        ],
+                        "id": 891,
+                        "name": "FunctionCall",
+                        "src": "225:23:1"
+                      }
+                    ],
+                    "id": 892,
+                    "name": "ExpressionStatement",
+                    "src": "225:23:1"
+                  }
+                ],
+                "id": 893,
+                "name": "Block",
+                "src": "214:42:1"
+              }
+            ],
+            "id": 894,
+            "name": "FunctionDefinition",
+            "src": "164:92:1"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "GetCampaignList",
+              "payable": false,
+              "scope": 904,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 895,
+                "name": "ParameterList",
+                "src": "292:2:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 903,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "address[] memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "length": null,
+                          "type": "address[] storage pointer"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "name": "address",
+                              "type": "address"
+                            },
+                            "id": 896,
+                            "name": "ElementaryTypeName",
+                            "src": "320:7:1"
+                          }
+                        ],
+                        "id": 897,
+                        "name": "ArrayTypeName",
+                        "src": "320:9:1"
+                      }
+                    ],
+                    "id": 898,
+                    "name": "VariableDeclaration",
+                    "src": "320:9:1"
+                  }
+                ],
+                "id": 899,
+                "name": "ParameterList",
+                "src": "319:11:1"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 899
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "overloadedDeclarations": [
+                            null
+                          ],
+                          "referencedDeclaration": 882,
+                          "type": "address[] storage ref",
+                          "value": "_addressList"
+                        },
+                        "id": 900,
+                        "name": "Identifier",
+                        "src": "354:12:1"
+                      }
+                    ],
+                    "id": 901,
+                    "name": "Return",
+                    "src": "347:19:1"
+                  }
+                ],
+                "id": 902,
+                "name": "Block",
+                "src": "336:38:1"
+              }
+            ],
+            "id": 903,
+            "name": "FunctionDefinition",
+            "src": "268:106:1"
+          }
+        ],
+        "id": 904,
+        "name": "ContractDefinition",
+        "src": "94:283:1"
+      }
+    ],
+    "id": 905,
+    "name": "SourceUnit",
+    "src": "0:377:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2018-01-03T12:44:19.068Z"
+}

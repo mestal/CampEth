@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>CampEth</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div ng-app="myApp" ng-controller="mainController">
+      <span>Account: </span>
+      <span ng-bind="selectedAccount"></span>
+      <!--select ng-model="selectedAccount" ng-options="a for a in accounts" -->
+      </select>
+      <input type="button" value="Show Creation" ng-click="showCreation=true" ng-show="!showCreation"></input> 
+      <input type="button" value="Hide Creation" ng-click="showCreation=false" ng-show="showCreation"></input> 
+
+      <br><br><br>
+      <div ng-show="selectedAccount != null && showCreation">
+        <input type="button" value="Create Main Contract" ng-click="CreateMainContract()"></input> 
+        <input type="text" ng-model="mainContractAddress"></span>
+        <input type="button" value="List Campaigns" ng-click="LoadCampaigns()"></input>
+        <div><b>Code: </b><input type="text" placeholder="Code" ng-model="newCamp.code" ></input> </div>
+        <!--div><b>Name: </b><input type="text" placeholder="Name" ng-model="newCamp.name"  ></input> </div-->
+        <div><b>Limit: </b><input type="text" placeholder="Limit" ng-model="newCamp.limit"  ></input> </div>
+        <div><b>Coupons: </b><input type="text" placeholder="Coupons" ng-model="newCamp.coupons" ></input> </div>
+        <input type="button" value="Create New Campaign" ng-click="CreateNewCampaign(newCamp)"></input> 
+        <input type="button" value="Add Campaign To Main Contract" ng-click="AddCampaignToMainContract()"></input-->
+        <ul>
+          <li ng-repeat="pd in NewPriceDefs">
+            <div><b>Quantity Level: </b><span ng-bind="pd.quantityLevel"></span><b> - Price: </b><span ng-bind="pd.price"></span></div>
+          </li>
+          
+        </ul>
+        <div>
+          <b>Campaign Address : </b>
+          <input type="text" ng-model="newCampaignDetail.CampaignAddress"/>
+          <b>Quantity Level: </b>
+          <input type="text" ng-model="newCampaignDetail.QuantityLevel"/>
+          <b> - Price: </b>
+          <input type="text" ng-model="newCampaignDetail.Price"/>
+          <input type="button" value="Add Campaign Detail" ng-click="AddCampaignDetail(newCampaignDetail)"></input>
+        </div>
+        <input type="button" value="Start Campaign" ng-click="StartCampaign()"></input>
+      </div>
+      <br><br><br>
+      <ul>
+        <li ng-repeat="c in campaigns">
+          <div><b>Address: </b><span ng-bind="c.contAddress"></span></div>
+          <div><b>Code: </b><span ng-bind="c.code"></span></div>
+          <!--div><b>Name: </b><span ng-bind="c.name"></span></div-->
+          <div><b>Limit: </b><span ng-bind="c.limit"></span></div>
+          <div><b>Current Bought Quantity: </b><span ng-bind="c.totalQuantity"></span></div>
+          <div ng-show="c.ended"><b>Ended</b></div>
+          <div><b>Current Price: </b>
+            <span ng-bind="c.currentPrice"></span> 
+            <input type="text" placeholder="Quantity" ng-model="c.quantity" ng-show="selectedAccount != c.owner && selectedAccount != null && c.started && !c.ended"></input> 
+            <input type="button" value="Buy" ng-click="Buy(c)" ng-show="selectedAccount != c.owner && selectedAccount != null && c.started && !c.ended" ></input> 
+            <input type="button" value="End Campaign" ng-click="End(c)" ng-show="selectedAccount == c.owner && c.started && !c.ended"></input> 
+            <input type="button" value="Get My Coupon" ng-click="GetMyCoupon(c)" ng-show="selectedAccount != c.owner && selectedAccount != null && c.started && c.ended"></input>
+          </div>
+          <b>Price Definitions: </b>
+          <ul>
+            <li ng-repeat="pd in c.priceDefs">
+                <div><b>Quantity Level: </b><span ng-bind="pd.quantityLevel"></span><b> - Price: </b><span ng-bind="pd.price"></span></div>
+            </li>
+          </ul>
+          <br>
+        </li>
+      </ul>
+    </div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/web3.min.js"></script>
+    <script src="js/truffle-contract.js"></script>
+    <!--script src="js/app.js"></script-->
+	  <script src="js/mainController.js"></script>
+  </body>
+</html>
